@@ -9,37 +9,93 @@
 
 const int default_screen_width = 80;
 const int default_frame_delay = 30000;
+const float default_R1 = 1;
+const float default_R2 = 2;
+const float default_K2 = 5;
+const float default_theta_spacing = 0.07;
+const float default_phi_spacing = .02;
 
 int main(int argc, char** argv) {
-    //set dot spacing
-    const float theta_spacing = 0.07;
-    const float phi_spacing = .02;
+    //set extra vars
+    int setARot = 0;
+    int setBRot = 0;
 
-    //set screen size and properties
+    //set screen size and properties default
     int screen_width = default_screen_width; //width of display area
     int screen_height = default_screen_width / 10 * 3; //height of display area
     int frame_delay = default_frame_delay; //time between frames
 
-    if (argc == 2)
+    //set mathimatical cosntants default
+    float R1 = default_R1; //circle radius
+    float R2 = default_R2; //torus radius
+    float K2 = default_K2; //distnace from eyes to donut
+    float ARot = 0;
+    float BRot = 0;
+
+    //set dot spacing deafult
+    float theta_spacing = default_theta_spacing; //how often to create dots around the torus
+    float phi_spacing = default_phi_spacing; //how often to create dots around the circle
+
+    //set custom flags from command line
+    if (argc >= 2)
     {
-        screen_width = atoi(argv[1]); 
-        screen_height = atoi(argv[1])  / 10 * 3; 
-    } else if (argc >= 3) {
-        screen_width = atoi(argv[1]); 
-        screen_height = atoi(argv[1]) / 10 * 3; 
-        frame_delay = atoi(argv[2]);
+        for (int i = 1; i < argc; i++)
+        {
+            if (strcmp(argv[i], "-s") == 0)
+            {
+                screen_width = atoi(argv[i+1]);
+                screen_height = atoi(argv[i+1]) / 10 * 3;
+            } 
+            else if (strcmp(argv[i], "-r1") == 0) 
+            {
+                R1 = atof(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "-r2") == 0) 
+            {
+                R2 = atof(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "-k") == 0) 
+            {
+                K2 = atof(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "-f") == 0) 
+            {
+                frame_delay = atoi(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "-t") == 0) 
+            {
+                theta_spacing = atof(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "-p") == 0) 
+            {
+                phi_spacing = atof(argv[i+1]);
+            }
+            else if (strcmp(argv[i], "-a") == 0) 
+            {
+                ARot = atof(argv[i+1]);
+                setARot = 1;
+            }
+            else if (strcmp(argv[i], "-b") == 0) 
+            {
+                BRot = atof(argv[i+1]);
+                setBRot = 1;
+            }
+        }
     }
 
-    //set mathimatical cosntants
-    const float R1 = 1; //circle radius
-    const float R2 = 2; //torus radius
-    const float K2 = 5; //distnace from eyes to donut
+    //set final mathimatical cosntants
     const float K1 = screen_height * K2 * 3 / ( 8 * (R1+R2)); //distance from eyes to screen
 
-    //set random rotation
+    //set random rotation if not set
     srand(time(0));
-    const float ARot = (float)(rand() % 5 + 1) / 100000;
-    const float BRot = (float)(rand() % 5 + 1) / 100000;
+    if (setARot == 0)
+    {
+        ARot = (float)(rand() % 5 + 1) / 100000;
+    }
+    if (setBRot == 0)
+    {
+        BRot = (float)(rand() % 5 + 1) / 100000;
+    }
     float A = 0;
     float B = 0;
 
